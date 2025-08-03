@@ -63,6 +63,7 @@ void yesno_test() {
 }
 
 int main(void) {
+	clear_screen();
 	// 选项数组（注意退出选项在最后位置）
 	Option_t options[] = {
 		{1, "功能一", option1_action},
