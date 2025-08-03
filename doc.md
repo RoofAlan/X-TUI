@@ -1,67 +1,121 @@
-***介绍***
+# TUI Development Toolkit Documentation
 
-    这是一个由RoofAlan在2025年1月27日发起的项目，目的在于更简单的实现终端图形化(TUI)，该项目更贴近新手学习
+## Project Overview
+- **Creator**: RoofAlan
+- **Initiation Date**: January 27, 2025
+- **Purpose**: Simplify Terminal User Interface (TUI) development with beginner-friendly APIs
+- **Core Advantage**: Intuitive functions accelerate learning curve
 
-***基础函数***
- 1. x_menu(): 这是最最最基础的函数之一，它能够显示一个菜单，使用方法如下:
-格式：
+---
 
-```C
+## Core Functions Reference
+
+### 1. Menu Display Function `x_menu()`
+```c
 x_menu(Option_t, BackGroundText, Title, Color);
 ```
 
-**使用示例**
+#### Parameter Specification
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `Option_t` | Struct array | Menu configuration structure |
+| `BackGroundText` | String | Secondary UI text |
+| `Title` | String | Primary menu title |
+| `Color` | ANSI escape code | Text formatting sequence |
 
-```C
+#### Option Structure Format
+```c
+typedef struct {
+    int type;       // Option identifier
+    char* text;     // Display text
+    void (*func)(); // Associated function 
+} Option_t;
+```
+
+#### Usage Example
+```c
 Option_t options = {
-    {1, "Option 1", NULL}, // NULL可以改成void(*)()类的函数
-    {2, "Option 2", NULL},
-    {0, "Exit", NULL}, // 这里的NULL也行
-    {0, NULL, NULL} // 这里必须是{0, NULL, NULL}
+    {1, "Data Processing", NULL},
+    {2, "System Settings", NULL},
+    {0, "Exit Program", NULL}, 
+    {0, NULL, NULL}  // Mandatory termination marker
 };
+
 while(1) {
-    int result = x_menu(options, "I'm background-text", "Title", "\e[32;7m"); // 颜色被定义为绿底黑字
-    if(result == 2) break; // 退出
+    int selection = x_menu(options, "TUI Framework v1.2", "Main Menu", "\e[34;1m");
+    if(selection == 2) exit_safely();
 }
 ```
 
-返回值说明：
-0: 正常返回  2: 选中了退出
---
+#### Return Values
+- `0`: Standard option selected
+- `2`: Exit option chosen
+- `-1`: Execution error
 
- 2. x_yesno(): 显示一个菜单，用于让用户选择"Yes"或"No"
-格式:
+---
 
-```C
+### 2. Confirmation Dialog `x_yesno()`
+```c
 x_yesno(Title, Color);
 ```
 
-**使用示例**
+#### Parameter Specification
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `Title` | String | Prompt question |
+| `Color` | ANSI escape code | Text formatting sequence |
 
-```C
-int res = x_yesno("Are you sure?", "\033[32;7m");
-if(res == 0) {
-    printf("You agreed\n");
+#### Usage Example
+```c
+int response = x_yesno("Overwrite existing file?", "\033[33;1m"); // Yellow bold text
+if(response == 0) {
+    save_changes();
 } else {
-    printf("You refused\n");
+    cancel_operation();
 }
 ```
 
-返回值说明:
-0: 同意，即选中"Yes"  1: 拒绝，即选中"No"
---
+#### Return Values
+- `0`: "Yes" selected
+- `1`: "No" selected
 
- 3. x_mvprintf(): 在屏幕的指定位置打印字符串
-格式:
+---
 
-```C
+### 3. Positional Output `x_mvprintf()`
+```c
 x_mvprintf(X, Y, format, args...)
 ```
 
-**使用示例**
+#### Parameter Specification
+| Parameter | Type | Description |
+|----------|------|-------------|
+| `X` | Integer | Column position (1-based) |
+| `Y` | Integer | Row position (1-based) |
+| `format` | String | printf-compatible format |
 
-```C
-x_mvprintf(2, 5, "Hello %s", "world!\n"); // 在屏幕的第二列、第五行打印"Hello world!"和一个回车符(\n)
+#### Usage Example
+```c
+// Display warning at column 15, row 5
+x_mvprintf(15, 5, "\033[31mALERT: System overload!\033[0m\n"); 
 ```
 
- 4. clear_screen(): 清除屏幕，直接用就行
+---
+
+### 4. Screen Clear Function `clear_screen()`
+```c
+clear_screen();
+```
+
+#### Implementation Notes
+Parameterless function that resets terminal display:
+```c
+clear_screen();  // Erases screen & positions cursor at (1,1)
+```
+
+---
+
+## Development Guidelines
+1. All functions utilize ANSI terminal standards
+2. Color parameters require valid ANSI escape sequences
+3. Menu arrays must terminate with `{0, NULL, NULL}`
+4. Position coordinates use 1-based indexing system

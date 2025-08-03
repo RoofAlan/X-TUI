@@ -28,4 +28,4 @@ cd X-TUI && make
 
 ## Docs
 
-参考[doc.md](doc.md)
+参考[doc.md](doc_zh.md)
