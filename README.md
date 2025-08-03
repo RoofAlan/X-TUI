@@ -20,7 +20,7 @@ sudo apt install binutils gcc
 cd X-TUI && make
 ```
 
-The compiled product is under src/, a static library called libx-tui.a编译后的产物在src/下，一个名为libx-tui.a的静态库
+The compiled product is under src/, a static library called libx-tui.a
 
 ## Use
 
