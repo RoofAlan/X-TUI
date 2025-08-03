@@ -1,6 +1,6 @@
 # X-TUI
 
-一个简单的终端UI框架，适合给新手学习
+A simple Terminal UI frame for greenhorn
 
 ## Before build
 
@@ -20,12 +20,12 @@ sudo apt install binutils gcc
 cd X-TUI && make
 ```
 
-编译后的产物在src/下，一个名为libx-tui.a的静态库
+The compiled product is under src/, a static library called libx-tui.a编译后的产物在src/下，一个名为libx-tui.a的静态库
 
 ## Use
 
-只需要在编译时加入"-L. -lx-tui"即可（确保这个库在当前文件夹下）
+Just add "-L. -lx-tui" at compile time (make sure this library is in the current folder)
 
 ## Docs
 
-参考doc.md
+See [doc.md](doc.md)
