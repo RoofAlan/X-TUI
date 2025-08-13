@@ -17,7 +17,7 @@ void clear_screen() {
 	printf("\e[H\e[J");
 }
 
-int get_terminal_size(int *x, int *y) {
+int get_screen_size(int *x, int *y) {
 	struct winsize ws;
 	if(ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1) { // Get terminal size
 		clear_screen();

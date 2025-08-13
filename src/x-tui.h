@@ -32,4 +32,7 @@ int x_yesno(const char *title, const char *color);
 // Move cursor
 int x_mvprintf(int x, int y, const char *fmt, ...);
 
+// Get screen size
+int get_screen_size(int *x, int *y);
+
 #endif
