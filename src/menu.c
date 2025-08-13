@@ -14,12 +14,23 @@ static void show_menu(int selected_index, const char *color, const char *descrip
 	}
 	clear_screen();
 	printf("%s\n", descript);
-	printf("		   %s\n", title);
+
+	int max_x = 0, max_y = 0;
+	get_screen_size(&max_x, &max_y);
+	size_t space_title = (max_x / 2) - strlen(title);
+
+	for(size_t s_count = 0; s_count < space_title; s_count++) {
+		printf(" ");
+	}
+	printf("%s\n", title);
 	for (int i = 0; i < num_options; i++) {
+		for(size_t s_count = 0; s_count < space_title; s_count++) {
+			printf(" ");
+		}
 		if (i == selected_index) {
-			printf("		  %s> [%d] %s%s\n", color, options[i].key, options[i].name, COLOR_RESET);
+			printf("%s> [%d] %s%s\n", color, options[i].key, options[i].name, COLOR_RESET);
 		} else {
-			printf("		  [%d] %s%s\n", options[i].key, options[i].name, COLOR_RESET);
+			printf("[%d] %s%s\n", options[i].key, options[i].name, COLOR_RESET);
 		}
 	}
 }

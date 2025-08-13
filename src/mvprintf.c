@@ -14,7 +14,7 @@ static void move_cur(int x,int y) {
 }
 
 void clear_screen() {
-	printf("\e[H\e[J");
+	printf("\e[H\e[2J\e[3J");
 }
 
 int get_screen_size(int *x, int *y) {
