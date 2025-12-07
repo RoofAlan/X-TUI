@@ -44,23 +44,54 @@ int xgetch() {
 	int ch = read_byte(-1);  // Read the first character
 
 	if (ch == KEY_ESC) {
-		// ANSI
-		int seq[2] = {-1, -1};
+		// ANSI escape sequence
+		int seq[3] = {-1, -1, -1};  // Extended to handle 3-char sequences
 		for (int i = 0; i < 2; i++) {
 			int ret = read_byte(20);
 			if (ret == -1) break;
 			seq[i] = ret;
 		}
 
-		// Up/Down/Left/Right
-		if (seq[0] == '[' && seq[1] >= 'A' && seq[1] <= 'H') {
-			switch (seq[1]) {
-				case 'A': ch = KEY_UP;	break;
-				case 'B': ch = KEY_DOWN;  break;
-				case 'C': ch = KEY_RIGHT; break;
-				case 'D': ch = KEY_LEFT;  break;
-				case 'H': ch = KEY_HOME; break;
-				case 'F': ch = KEY_END; break;
+		// Up/Down/Left/Right and other special keys
+		if (seq[0] == '[') {
+			if (seq[1] >= 'A' && seq[1] <= 'H') {
+				switch (seq[1]) {
+					case 'A': ch = KEY_UP;	break;
+					case 'B': ch = KEY_DOWN;  break;
+					case 'C': ch = KEY_RIGHT; break;
+					case 'D': ch = KEY_LEFT;  break;
+					case 'H': ch = KEY_HOME; break;
+					case 'F': ch = KEY_END; break;
+				}
+			} else if (seq[1] >= '1' && seq[1] <= '2') {
+				int seq3 = read_byte(20);
+				if( seq3 == -1 ) {
+					ch = KEY_ESC;
+					goto end;
+				}
+				if(seq[1] == '1') {
+					switch(seq3) {
+						case '5': ch = KEY_F(5); break;
+						case '7': ch = KEY_F(6); break;
+						case '8': ch = KEY_F(7); break;
+						case '9': ch = KEY_F(8); break;
+					}
+				} else if (seq[1] == '2') {
+					switch(seq3) {
+						case '0': ch = KEY_F(9); break;
+						case '1': ch = KEY_F(10); break;
+						case '3': ch = KEY_F(11); break;
+						case '4': ch = KEY_F(12); break;
+					}
+				}
+				// Handle tilde sequences like [3~ for Delete
+				else if (seq3 == '~') {
+					switch (seq[1]) {
+						case '3': ch = KEY_BKSPE; break; // Delete key
+					}
+				}
+			} else if (seq[1] == '3' && seq[2] == '~') {
+				ch = KEY_BKSPE;  // Delete key
 			}
 		}
 		// Alt + x
@@ -75,31 +106,12 @@ int xgetch() {
 				case 'S': ch = KEY_F(4); break;
 			}
 		}
-		else if (seq[0] == '[' && seq[1] == '1' || seq[1] == '2') {
-			int seq3 = read_byte(20);
-			if( seq3 == -1 ) {
-				ch = KEY_ESC;
-				goto end;
-			}
-			if(seq[1] == '1') {
-				switch(seq3) {
-					case '5': ch = KEY_F(5); break;
-					/* \033[16~ -> ? */
-					case '7': ch = KEY_F(6); break;
-					case '8': ch = KEY_F(7); break;
-					case '9': ch = KEY_F(8); break;
-				}
-			} else if (seq[1] == '2') {
-				switch(seq3) {
-					case '0': ch = KEY_F(9); break;
-					case '1': ch = KEY_F(10); break;
-					case '3': ch = KEY_F(11); break;
-					case '4': ch = KEY_F(12); break;
-				}
-			}
-		}
 		// Other => ESC
 		else ch = KEY_ESC;
+	}
+	// Handle carriage return as enter key
+	else if (ch == '\r') {
+		ch = KEY_ENTER;
 	}
 end:
 	disable_raw_mode();

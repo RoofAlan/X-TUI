@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include "src/x-tui.h"
 
 const char *mcolor[] = {
@@ -19,6 +20,29 @@ void option2_action() {
 	sleep(1);
 }
 
+void input_test() {
+	char input_buffer[256];
+	int len = x_input(input_buffer, sizeof(input_buffer), "请输入您的姓名: ", "\033[32m");
+	if (len > 0) {
+		clear_screen();
+		x_mvprintf(5, 7, "\033[32m您好, %s!\033[0m", input_buffer);
+		x_mvprintf(5, 8, "\033[37m按任意键继续...\033[0m");
+		xgetch();
+	} else {
+		clear_screen();
+		x_mvprintf(5, 7, "\033[31m输入被取消或出错\033[0m");
+		sleep(1);
+	}
+}
+
+void progress_test() {
+	clear_screen();
+	int final_progress = x_progress(35, 50, "交互进度条", "\033[33m");
+	clear_screen();
+}
+
+
+
 void set_color() {
 	if(ncolor < 3) {
 		ncolor++;
@@ -30,13 +54,15 @@ void set_color() {
 void settings_action() {
 	while(1) {
 		char sc[50];
-		sprintf(sc, "改变颜色(Now: %d)",ncolor);
+		snprintf(sc, sizeof(sc), "改变颜色(Now: %d)", ncolor);
 		Option_t option[] = {
 			{1, sc, set_color},
+			{2, "输入测试", input_test},
+			{3, "进度条测试", progress_test},
 			{0, "返回", NULL},
 			{0, NULL, NULL}
 		};
-		int res = x_menu(option, "X-TUI v1.1!", "Settings", mcolor[ncolor]);
+		int res = x_menu(option, "X-TUI v1.3! - 设置菜单", "Settings", mcolor[ncolor]);
 		if(res == 2) break;
 	}
 }
@@ -48,13 +74,13 @@ void theme() {
 		{0, NULL, NULL}
 	};
 	while(1) {
-		int res = x_menu(option, "X-TUI V1.1!", "Themes", mcolor[ncolor]);
+		int res = x_menu(option, "X-TUI v1.3! - 主题设置", "Themes", mcolor[ncolor]);
 		if(res == 2) break;
 	}
 }
 
 void yesno_test() {
-	int res = x_yesno("Are you sure?", mcolor[ncolor]);
+	int res = x_yesno("确定要退出程序吗?", mcolor[ncolor]);
 	if(res == 0) {
 		exit(0);
 	} else {
@@ -68,13 +94,15 @@ int main(void) {
 	Option_t options[] = {
 		{1, "功能一", option1_action},
 		{2, "功能二", option2_action},
-		{3, "系统设置", settings_action},
-		{4, "主题", theme},
+		{3, "输入测试", input_test},
+		{4, "进度条测试", progress_test},
+		{5, "系统设置", settings_action},
+		{6, "主题", theme},
 		{0, "退出程序", yesno_test},
 		{0, NULL, NULL}
 	};
 	while(1) {
-		x_menu(options, "X-TUI V1.1!", "MainMenu", mcolor[ncolor]);
+		x_menu(options, "X-TUI V1.3! - 增强版", "主菜单", mcolor[ncolor]);
 	}
 	return 0;
 }

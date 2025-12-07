@@ -35,4 +35,15 @@ int x_mvprintf(int x, int y, const char *fmt, ...);
 // Get screen size
 int get_screen_size(int *x, int *y);
 
+// Get user input as string (new function)
+// Get user input as string (new function)
+int x_input(char *buffer, int max_len, const char *prompt, const char *color);
+
+// Hide/show cursor for smoother UI
+void hide_cursor();
+void show_cursor();
+
+// Interactive moveable progress bar that responds to user input
+int x_progress(int width, int add, const char *title, const char *color);
+
 #endif
