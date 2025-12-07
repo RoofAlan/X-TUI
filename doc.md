@@ -135,57 +135,29 @@ if (len > 0) {
 - The dialog automatically centers on the screen and clears the screen before showing
 - No position parameters needed - always appears in the center of the screen
 
-### 5. Progress Bar Function `x_progress()` (NEW)
+### 5. Interactive Moveable Progress Bar Function `x_progress_interactive()` (NEW)
 ```c
-x_progress(width, progress, title, color);
+x_progress(width, once_addition, title, color);
 ```
 
 #### Parameter Specification
 | Parameter | Type | Description |
 |----------|------|-------------|
 | `width` | Integer | Width of the progress bar |
-| `progress` | Integer | Progress percentage (0-100) |
-| `title` | String | Title to display on the progress bar |
-| `color` | String | Color formatting sequence |
-
-#### Usage Example
-```c
-// Show centered progress bar with width 30, 50% progress
-x_progress(30, 50, "Loading...", "\033[32m");
-
-// Update progress to 75%
-x_progress(30, 75, "Loading...", "\033[32m");
-```
-
-#### Notes
-- Creates an outlined box with a progress bar inside
-- The progress bar is always centered on the screen
-- The progress percentage is displayed in the center of the bar
-- Progress is visualized with filled blocks (█) and empty blocks (░)
-
-### 6. Interactive Moveable Progress Bar Function `x_progress_interactive()` (NEW)
-```c
-x_progress_interactive(width, title, color);
-```
-
-#### Parameter Specification
-| Parameter | Type | Description |
-|----------|------|-------------|
-| `width` | Integer | Width of the progress bar |
+| `add` | Integer | Amount to add/subtract when using arrow keys |
 | `title` | String | Title to display on the progress bar |
 | `color` | String | Color formatting sequence |
 
 #### Usage Example
 ```c
 // Show interactive progress bar that user can move and adjust
-int final_progress = x_progress_interactive(30, "Moveable Progress", "\033[32m");
+int final_progress = x_progress(30, 50, "Moveable Progress", "\033[32m");
 printf("Final progress: %d%%\n", final_progress);
 ```
 
 #### Controls
-- **Arrow Keys**: Move the progress bar around the screen
-- **+/- Keys**: Increase/decrease progress value
-- **ESC Key**: Exit the interactive mode
+- **Arrow Keys**: Increase/decrease progress value
+- **Enter Key**: Exit the interactive mode
 
 #### Return Values
 - `0-100`: Final progress percentage when user exits
@@ -197,7 +169,7 @@ printf("Final progress: %d%%\n", final_progress);
 
 ---
 
-### 5. Screen Clear Function `clear_screen()`
+### 6. Screen Clear Function `clear_screen()`
 ```c
 clear_screen();
 ```
@@ -208,7 +180,7 @@ Parameterless function that resets terminal display:
 clear_screen();  // Erases screen & positions cursor at (1,1)
 ```
 
-### 6. Screen Size Function `get_screen_size()`
+### 7. Screen Size Function `get_screen_size()`
 ```c
 get_screen_size(int *x, int *y);
 ```
@@ -223,6 +195,28 @@ get_screen_size(int *x, int *y);
 - `0`: Success
 - `-1`: Error getting screen size
 
+### 8. Hide Cursor Function `hide_cursor()`
+```c
+hide_cursor();
+```
+
+#### Implementation Notes
+Parameterless function that hides the cursor for a smoother UI:
+```c
+hide_cursor();  // Hides the terminal cursor
+```
+
+### 9. Show Cursor Function `show_cursor()`
+```c
+show_cursor();
+```
+
+#### Implementation Notes
+Parameterless function that shows the cursor:
+```c
+show_cursor();  // Shows the terminal cursor
+```
+
 ---
 
 ## Development Guidelines
@@ -233,3 +227,4 @@ get_screen_size(int *x, int *y);
 5. Always check return values for error handling
 6. Use `snprintf` instead of `sprintf` to prevent buffer overflows
 7. User can cancel most operations with ESC key
+8. Remember to call `show_cursor()` after hiding it to restore normal terminal behavior
